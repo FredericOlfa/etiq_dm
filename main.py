@@ -24,7 +24,7 @@ except ImportError:
 
 class DataMatrixScannerApp(App):
     def build(self):
-        self.title = "Scanner DataMatrix Logistique"
+        self.title = "Scanner DataMatrix OLFA"
         self.api_url = "https://api.mon-entreprise.com/v1/scan"
 
         main_layout = BoxLayout(orientation="vertical", padding=15, spacing=10)
