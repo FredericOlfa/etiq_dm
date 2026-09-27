@@ -16,7 +16,7 @@
                         brand: {
                             50: '#fffbe1',
                             100: '#fff3b8',
-                            500: '#eab308', // Industrial Amber
+                            500: '#eab308',
                             600: '#ca8a04',
                             700: '#a16207',
                             900: '#422006',
@@ -30,7 +30,6 @@
         }
     </script>
     <style>
-        /* Desactivation de la sélection contextuelle pour UX mobile fluide */
         * { -webkit-tap-highlight-color: transparent; }
         body { background-color: #0f1115; color: #e5e7eb; font-family: system-ui, -apple-system, sans-serif; }
         #reader video { object-fit: cover !important; border-radius: 0.75rem; }
@@ -57,8 +56,7 @@
     </header>
 
     <main class="flex-grow max-w-2xl w-full mx-auto p-4 space-y-4">
-        
-        <!-- Navigation Tabs -->
+
         <div class="flex border-b border-gray-800 bg-darkcard rounded-t-xl overflow-hidden">
             <button id="tabScanBtn" onclick="switchTab('scan')" class="flex-1 py-3 text-center font-medium text-sm tab-active transition-all">
                 <i class="fa-solid fa-camera mr-2"></i>Scanner
@@ -75,7 +73,6 @@
         </div>
 
         <section id="panelScan" class="space-y-4">
-            <!-- Camera Scanner Viewport -->
             <div class="bg-darkcard border border-gray-800 rounded-xl p-3 shadow-inner relative overflow-hidden">
                 <div id="reader" class="w-full min-h-[220px] bg-black rounded-lg overflow-hidden flex items-center justify-center">
                     <div id="scanPlaceholder" class="text-center p-6 text-gray-500">
@@ -83,9 +80,9 @@
                         <p class="text-sm">Cliquez sur le bouton ci-dessous pour démarrer le scanner</p>
                     </div>
                 </div>
-                
+
                 <div class="mt-3 flex gap-2">
-                    <button id="btnToggleCam" onclick="toggleCamera()" class="flex-1 bg-brand-500 hover:bg-brand-600 active:scale-95 text-black font-bold py-3 px-4 rounded-xl flex items-center justify-center shadow-lg transition-all">
+                    <button id="btnToggleCam" onclick="toggleCamera()" class="flex-1 bg-brand-500 hover:bg-brand-600 active:scale-95 text-black font-bold py-3 px-4 rounded-xl flex items-center justify-center">
                         <i class="fa-solid fa-camera text-lg mr-2"></i>
                         <span id="btnCamText">Démarrer la Caméra</span>
                     </button>
@@ -95,44 +92,33 @@
                 </div>
             </div>
 
-            <!-- Form Data Matrix & Quantity -->
             <div class="bg-darkcard border border-gray-800 rounded-xl p-4 shadow-md space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                         Code DataMatrix / Barcode Lu
                     </label>
                     <div class="relative">
-                        <input type="text" id="codeOutput" placeholder="Scannez ou saisissez un code..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-brand-500 font-mono font-bold text-lg focus:outline-none focus:border-brand-500 transition-all">
+                        <input type="text" id="codeOutput" placeholder="Scannez ou saisissez un code..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-brand-500 font-mono text-base focus:outline-none focus:border-brand-500">
                         <button onclick="document.getElementById('codeOutput').focus()" class="absolute right-3 top-3 text-gray-500">
                             <i class="fa-solid fa-pen"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Selector Quantity -->
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                         Quantité à enregistrer
                     </label>
                     <div class="flex items-center space-x-3">
-                        <button onclick="adjustQty(-10)" class="bg-gray-800 border border-gray-700 text-brand-500 hover:bg-gray-700 active:bg-gray-600 w-12 h-12 rounded-xl text-lg font-bold flex items-center justify-center shadow">
-                            -10
-                        </button>
-                        <button onclick="adjustQty(-1)" class="bg-gray-800 border border-gray-700 text-white hover:bg-gray-700 active:bg-gray-600 w-12 h-12 rounded-xl text-xl font-bold flex items-center justify-center shadow">
-                            <i class="fa-solid fa-minus"></i>
-                        </button>
+                        <button onclick="adjustQty(-10)" class="bg-gray-800 border border-gray-700 text-brand-500 hover:bg-gray-700 active:bg-gray-600 w-12 h-12 rounded-xl text-lg font-bold flex items-center justify-center">-10</button>
+                        <button onclick="adjustQty(-1)" class="bg-gray-800 border border-gray-700 text-white hover:bg-gray-700 active:bg-gray-600 w-12 h-12 rounded-xl text-xl font-bold flex items-center justify-center"><i class="fa-solid fa-minus"></i></button>
                         <input type="number" id="qtyInput" value="1" min="1" class="flex-1 text-center bg-darkinput border border-gray-700 rounded-xl py-3 text-2xl font-black text-white focus:outline-none focus:border-brand-500">
-                        <button onclick="adjustQty(1)" class="bg-gray-800 border border-gray-700 text-white hover:bg-gray-700 active:bg-gray-600 w-12 h-12 rounded-xl text-xl font-bold flex items-center justify-center shadow">
-                            <i class="fa-solid fa-plus"></i>
-                        </button>
-                        <button onclick="adjustQty(10)" class="bg-gray-800 border border-gray-700 text-brand-500 hover:bg-gray-700 active:bg-gray-600 w-12 h-12 rounded-xl text-lg font-bold flex items-center justify-center shadow">
-                            +10
-                        </button>
+                        <button onclick="adjustQty(1)" class="bg-gray-800 border border-gray-700 text-white hover:bg-gray-700 active:bg-gray-600 w-12 h-12 rounded-xl text-xl font-bold flex items-center justify-center"><i class="fa-solid fa-plus"></i></button>
+                        <button onclick="adjustQty(10)" class="bg-gray-800 border border-gray-700 text-brand-500 hover:bg-gray-700 active:bg-gray-600 w-12 h-12 rounded-xl text-lg font-bold flex items-center justify-center">+10</button>
                     </div>
                 </div>
 
-                <!-- Submit Button -->
-                <button onclick="sendScanData()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-bold py-4 px-6 rounded-xl text-lg shadow-lg flex items-center justify-center space-x-2 transition-all">
+                <button onclick="sendScanData()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-bold py-4 px-6 rounded-xl text-lg shadow-lg flex items-center justify-center gap-2">
                     <i class="fa-solid fa-paper-plane"></i>
                     <span>Envoyer au Serveur (HTTP)</span>
                 </button>
@@ -146,17 +132,15 @@
                     <i class="fa-solid fa-trash mr-1"></i>Effacer l'historique
                 </button>
             </div>
-            <div id="historyList" class="space-y-2">
-                <!-- Dynamically generated items -->
-            </div>
+            <div id="historyList" class="space-y-2"></div>
         </section>
 
         <section id="panelSettings" class="hidden bg-darkcard border border-gray-800 rounded-xl p-4 space-y-4 shadow-md">
             <h2 class="text-md font-bold text-white border-b border-gray-800 pb-2">Configuration du Serveur HTTP</h2>
-            
+
             <div>
                 <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">URL Endpoint Serveur</label>
-                <input type="url" id="apiUrlInput" placeholder="https://api.mon-entreprise.com/v1/scan" class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
+                <input type="url" id="apiUrlInput" placeholder="https://api.mon-entreprise.com/v1/scan" class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500">
             </div>
 
             <div class="grid grid-cols-2 gap-3">
@@ -176,7 +160,7 @@
 
             <div>
                 <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Clé API / Token de sécurité (Optional)</label>
-                <input type="password" id="apiKeyInput" placeholder="Bearer eyJhbGciOi..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
+                <input type="password" id="apiKeyInput" placeholder="Bearer eyJhbGciOi..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500">
             </div>
 
             <div class="pt-2">
@@ -188,186 +172,47 @@
 
         <section id="panelPython" class="hidden bg-darkcard border border-gray-800 rounded-xl p-4 space-y-3">
             <div class="flex justify-between items-center">
-                <h2 class="text-md font-bold text-white">Application Native Python (Kivy)</h2>
-                <button onclick="copyPythonCode()" class="text-xs bg-gray-800 hover:bg-gray-700 text-brand-500 px-3 py-1.5 rounded-lg border border-gray-700">
-                    <i class="fa-solid fa-copy mr-1"></i>Copier le Code
-                </button>
+                <h2 class="text-md font-bold text-white">Code Python séparé</h2>
+                <a href="main.py" target="_blank" class="text-xs bg-gray-800 hover:bg-gray-700 text-brand-500 px-3 py-1.5 rounded-lg border border-gray-700">
+                    <i class="fa-solid fa-external-link-alt mr-1"></i>Ouvrir main.py
+                </a>
             </div>
-            <p class="text-xs text-gray-400">Si vous préférez compiler un fichier APK APK natif Android via Buildozer / Python, utilisez le code complet ci-dessous :</p>
-            
-            <pre class="bg-black p-3 rounded-lg text-xs font-mono text-emerald-400 overflow-x-auto border border-gray-800 max-h-96" id="pythonCodeBlock"><code># =========================================================
-# APPLICATION ANDROID PYTHON (Kivy + Camera + HTTP Requests)
-# Fichier: main.py
-# =========================================================
-import json
-import time
-from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
-from kivy.network.urlrequest import UrlRequest
-from kivy.clock import Clock
 
-# Pour scanner avec la caméra sous Android nativement:
-# Nécessite pyzbar et opencv-python ou plyer camera
-try:
-    from pyzbar.pyzbar import decode
-    import cv2
-    HAS_CV2 = True
-except ImportError:
-    HAS_CV2 = False
+            <p class="text-xs text-gray-400">
+                Le code Python n'est plus intégré dans <code class="text-brand-500">index.html</code>.
+                Il est désormais dans <code class="text-brand-500">main.py</code> pour garder le HTML propre et maintenable.
+            </p>
 
-class DataMatrixScannerApp(App):
-    def build(self):
-        self.title = "Scanner DataMatrix Logistique"
-        self.api_url = "https://api.mon-entreprise.com/v1/scan"
-        
-        main_layout = BoxLayout(orientation='vertical', padding=15, spacing=10)
-        
-        # Header
-        main_layout.add_widget(Label(
-            text="DATA MATRIX SCANNER (PYTHON)",
-            font_size='20sp',
-            bold=True,
-            size_hint_y=None,
-            height=40
-        ))
-        
-        # Datamatrix Read Output
-        main_layout.add_widget(Label(text="Code DataMatrix Scanné :", size_hint_y=None, height=25))
-        self.code_input = TextInput(
-            text="",
-            multiline=False,
-            font_size='18sp',
-            size_hint_y=None,
-            height=45
-        )
-        main_layout.add_widget(self.code_input)
-        
-        # Quantity Input
-        main_layout.add_widget(Label(text="Quantité :", size_hint_y=None, height=25))
-        qty_box = BoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=50)
-        
-        btn_minus = Button(text="-", font_size='24sp', on_press=self.dec_qty)
-        self.qty_input = TextInput(text="1", multiline=False, font_size='20sp', halign='center')
-        btn_plus = Button(text="+", font_size='24sp', on_press=self.inc_qty)
-        
-        qty_box.add_widget(btn_minus)
-        qty_box.add_widget(self.qty_input)
-        qty_box.add_widget(btn_plus)
-        main_layout.add_widget(qty_box)
-        
-        # Status Label
-        self.status_label = Label(
-            text="Prêt à envoyer",
-            color=(0.8, 0.8, 0.8, 1),
-            size_hint_y=None,
-            height=30
-        )
-        main_layout.add_widget(self.status_label)
-        
-        # Submit Button
-        btn_send = Button(
-            text="ENVOYER LA REQUÊTE HTTP",
-            background_color=(0.1, 0.7, 0.3, 1),
-            font_size='16sp',
-            bold=True,
-            size_hint_y=None,
-            height=60,
-            on_press=self.send_http_request
-        )
-        main_layout.add_widget(btn_send)
-        
-        return main_layout
-
-    def inc_qty(self, instance):
-        try:
-            val = int(self.qty_input.text)
-            self.qty_input.text = str(val + 1)
-        except ValueError:
-            self.qty_input.text = "1"
-
-    def dec_qty(self, instance):
-        try:
-            val = int(self.qty_input.text)
-            if val > 1:
-                self.qty_input.text = str(val - 1)
-        except ValueError:
-            self.qty_input.text = "1"
-
-    def send_http_request(self, instance):
-        code = self.code_input.text.strip()
-        qty = self.qty_input.text.strip()
-        
-        if not code:
-            self.status_label.text = "Erreur : Code DataMatrix vide !"
-            self.status_label.color = (1, 0.2, 0.2, 1)
-            return
-
-        payload = json.dumps({
-            "datamatrix": code,
-            "quantity": int(qty) if qty.isdigit() else 1,
-            "timestamp": int(time.time()),
-            "device_id": "PYTHON-ANDROID-01"
-        })
-        
-        headers = {'Content-Type': 'application/json'}
-        
-        self.status_label.text = "Envoi HTTP en cours..."
-        self.status_label.color = (0.9, 0.7, 0.1, 1)
-        
-        # Requete asynchrone pour ne pas bloquer l'UI
-        UrlRequest(
-            self.api_url,
-            req_body=payload,
-            req_headers=headers,
-            method='POST',
-            on_success=self.on_http_success,
-            on_error=self.on_http_error,
-            on_failure=self.on_http_error
-        )
-
-    def on_http_success(self, req, result):
-        self.status_label.text = "Succès : Données transmises !"
-        self.status_label.color = (0.2, 1, 0.3, 1)
-        self.code_input.text = ""
-
-    def on_http_error(self, req, result):
-        self.status_label.text = f"Erreur HTTP : {req.resp_status}"
-        self.status_label.color = (1, 0.2, 0.2, 1)
-
-if __name__ == '__main__':
-    DataMatrixScannerApp().run()
-</code></pre>
+            <div class="bg-black p-3 rounded-lg border border-gray-800 text-xs text-emerald-400 font-mono">
+                <p>Fichier : <span class="text-white">main.py</span></p>
+                <p class="mt-2 text-gray-300">Application Kivy + scanner + envoi HTTP</p>
+            </div>
         </section>
     </main>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-gray-900 border border-gray-700 text-white px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center space-x-3 z-50">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
-        <span id="toastMsg" class="text-sm font-medium">Notification</span>
+    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-gray-900 border border-gray-700 text-white px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none z-50">
+        <div class="flex items-center gap-2">
+            <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+            <span id="toastMsg" class="text-sm font-medium">Notification</span>
+        </div>
     </div>
 
     <script>
-        // State variables
         let html5QrcodeScanner = null;
         let isScanning = false;
         let scanHistory = JSON.parse(localStorage.getItem('scan_history') || '[]');
 
-        // Initialize Application
         window.addEventListener('DOMContentLoaded', () => {
             loadSettings();
             updateHistoryUI();
         });
 
-        // Tab Switching Logic
         function switchTab(tabName) {
             const tabs = ['scan', 'history', 'settings', 'python'];
             tabs.forEach(t => {
                 const panel = document.getElementById('panel' + t.charAt(0).toUpperCase() + t.slice(1));
                 const btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1) + 'Btn');
-                
+
                 if (t === tabName) {
                     panel.classList.remove('hidden');
                     btn.classList.add('tab-active');
@@ -379,13 +224,11 @@ if __name__ == '__main__':
                 }
             });
 
-            // Stop camera if leaving scan tab
             if (tabName !== 'scan' && isScanning) {
                 stopCamera();
             }
         }
 
-        // Toggle Camera Scan
         function toggleCamera() {
             if (isScanning) {
                 stopCamera();
@@ -395,10 +238,10 @@ if __name__ == '__main__':
         }
 
         function startCamera() {
-            const config = { 
-                fps: 15, 
+            const config = {
+                fps: 15,
                 qrbox: { width: 250, height: 250 },
-                formatsToSupport: [ 
+                formatsToSupport: [
                     Html5QrcodeSupportedFormats.DATA_MATRIX,
                     Html5QrcodeSupportedFormats.QR_CODE,
                     Html5QrcodeSupportedFormats.CODE_128
@@ -406,13 +249,12 @@ if __name__ == '__main__':
             };
 
             html5QrcodeScanner = new Html5Qrcode("reader");
-            
             document.getElementById('scanPlaceholder')?.classList.add('hidden');
 
             html5QrcodeScanner.start(
-                { facingMode: "environment" }, 
-                config, 
-                onScanSuccess, 
+                { facingMode: "environment" },
+                config,
+                onScanSuccess,
                 onScanError
             ).then(() => {
                 isScanning = true;
@@ -436,25 +278,17 @@ if __name__ == '__main__':
             }
         }
 
-        function onScanSuccess(decodedText, decodedResult) {
-            // Feedback Audio & Vibration
+        function onScanSuccess(decodedText) {
             triggerFeedback();
-
-            // Populate scanned text into input
             document.getElementById('codeOutput').value = decodedText;
-
             showToast("DataMatrix scanné avec succès !", "success");
-            
-            // Auto pause or highlight
             stopCamera();
         }
 
-        function onScanError(errorMessage) {
-            // Continuous scanning error silently ignored
+        function onScanError() {
         }
 
         function triggerFeedback() {
-            // Audio Beep
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
@@ -466,9 +300,8 @@ if __name__ == '__main__':
                 gain.connect(ctx.destination);
                 osc.start();
                 osc.stop(ctx.currentTime + 0.15);
-            } catch(e){}
+            } catch(e) {}
 
-            // Vibration API
             if (navigator.vibrate) {
                 navigator.vibrate(120);
             }
@@ -507,7 +340,7 @@ if __name__ == '__main__':
             document.getElementById('apiMethodSelect').value = localStorage.getItem('cfg_api_method') || 'POST';
             document.getElementById('deviceIdInput').value = localStorage.getItem('cfg_device_id') || 'MOBILE-01';
             document.getElementById('apiKeyInput').value = localStorage.getItem('cfg_api_key') || '';
-            
+
             updateBadgeStatus();
         }
 
@@ -577,7 +410,6 @@ if __name__ == '__main__':
                 }
             } catch (err) {
                 console.error(err);
-                // Simulation pour démonstration si réseau local inaccessible
                 showToast("Erreur Réseau : Enregistré dans l'historique local", "error");
                 addHistoryItem(code, qty, 'ÉCHEC RÉSEAU');
             }
@@ -591,7 +423,7 @@ if __name__ == '__main__':
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
             };
             scanHistory.unshift(item);
-            if (scanHistory.length > 50) scanHistory.pop(); // Max 50 items
+            if (scanHistory.length > 50) scanHistory.pop();
             localStorage.setItem('scan_history', JSON.stringify(scanHistory));
             updateHistoryUI();
         }
@@ -648,14 +480,8 @@ if __name__ == '__main__':
             }, 3000);
         }
 
-        function copyPythonCode() {
-            const code = document.getElementById('pythonCodeBlock').innerText;
-            document.execCommand('copy');
-            showToast("Code Python copié dans le presse-papier !", "success");
-        }
-
         function escapeHtml(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>
 </body>
