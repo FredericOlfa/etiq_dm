@@ -95,10 +95,32 @@
                         Code DataMatrix / Barcode Lu
                     </label>
                     <div class="relative">
-                        <input type="text" id="codeOutput" placeholder="Scannez ou saisissez un code..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-brand-500 font-mono text-sm focus:outline-none focus:border-brand-500">
+                        <input type="text" id="codeOutput" placeholder="Scannez ou saisissez un code..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-brand-500 font-mono" onchange="parseGS1Code()">
                         <button onclick="document.getElementById('codeOutput').focus()" class="absolute right-3 top-3 text-gray-500">
                             <i class="fa-solid fa-pen"></i>
                         </button>
+                    </div>
+                </div>
+
+                <!-- Parsed GS1 Fields -->
+                <div class="grid grid-cols-1 gap-3 p-3 bg-darkbg border border-gray-700 rounded-lg">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                            GTIN (14 chiffres)
+                        </label>
+                        <input type="text" id="gtinField" readonly placeholder="--" class="w-full bg-darkinput border border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-300 font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                            Date Fabrication (AAMMJJ)
+                        </label>
+                        <input type="text" id="dateField" readonly placeholder="--" class="w-full bg-darkinput border border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-300 font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                            Lot / Batch
+                        </label>
+                        <input type="text" id="lotField" readonly placeholder="--" class="w-full bg-darkinput border border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-300 font-mono">
                     </div>
                 </div>
 
@@ -106,7 +128,7 @@
                     <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                         Quantité à imprimer
                     </label>
-                    <input type="number" id="qtyInput" value="1" min="1" class="w-full text-center bg-darkinput border border-gray-700 rounded-xl py-3 text-2xl font-black text-white focus:outline-none focus:border-brand-500 mb-3">
+                    <input type="number" id="qtyInput" value="1" min="1" class="w-full text-center bg-darkinput border border-gray-700 rounded-xl py-3 text-2xl font-black text-white focus:outline-none focus:border-brand-500">
                     <div class="flex gap-2 justify-center">
                         <button onclick="adjustQty(-10)" class="bg-gray-800 border border-gray-700 text-brand-500 hover:bg-gray-700 active:bg-gray-600 w-14 h-12 rounded-xl text-lg font-bold flex items-center justify-center">
                             -10
@@ -188,6 +210,11 @@
         let html5QrcodeScanner = null;
         let isScanning = false;
         let scanHistory = JSON.parse(localStorage.getItem('scan_history') || '[]');
+        let parsedData = {
+            gtin: null,
+            date: null,
+            lot: null
+        };
 
         window.addEventListener('DOMContentLoaded', () => {
             loadSettings();
@@ -268,6 +295,7 @@
         function onScanSuccess(decodedText) {
             triggerFeedback();
             document.getElementById('codeOutput').value = decodedText;
+            parseGS1Code();
             showToast("DataMatrix scanné avec succès !", "success");
             stopCamera();
         }
@@ -294,9 +322,56 @@
             }
         }
 
+        function parseGS1Code() {
+            const code = document.getElementById('codeOutput').value.trim();
+            
+            // Reset fields
+            parsedData = { gtin: null, date: null, lot: null };
+            document.getElementById('gtinField').value = '';
+            document.getElementById('dateField').value = '';
+            document.getElementById('lotField').value = '';
+
+            if (!code) return;
+
+            // Parse GS1-128 format: 01{GTIN}11{DATE}10{LOT}
+            // Format: 01[14 digits]11[6 digits AAMMJJ]10[variable length lot]
+            
+            const gs1Pattern = /01(\d{14})11(\d{6})10(.+)/;
+            const match = code.match(gs1Pattern);
+
+            if (match) {
+                parsedData.gtin = match[1];
+                parsedData.date = match[2];
+                parsedData.lot = match[3];
+
+                document.getElementById('gtinField').value = parsedData.gtin;
+                document.getElementById('dateField').value = formatDate(parsedData.date);
+                document.getElementById('lotField').value = parsedData.lot;
+
+                showToast("Code GS1 parsé avec succès !", "success");
+            } else {
+                showToast("Format GS1-128 non reconnu. Vérifiez le code.", "error");
+            }
+        }
+
+        function formatDate(dateStr) {
+            // Format AAMMJJ to JJ/MM/AA
+            if (dateStr && dateStr.length === 6) {
+                const year = dateStr.substring(0, 2);
+                const month = dateStr.substring(2, 4);
+                const day = dateStr.substring(4, 6);
+                return `${day}/${month}/${year}`;
+            }
+            return dateStr;
+        }
+
         function clearScannedData() {
             document.getElementById('codeOutput').value = '';
             document.getElementById('qtyInput').value = 1;
+            parsedData = { gtin: null, date: null, lot: null };
+            document.getElementById('gtinField').value = '';
+            document.getElementById('dateField').value = '';
+            document.getElementById('lotField').value = '';
         }
 
         function adjustQty(amount) {
@@ -366,11 +441,15 @@
                 return;
             }
 
+            // Include parsed GS1 fields in the payload
             const payload = {
                 datamatrix: code,
                 quantity: qty,
                 timestamp: new Date().toISOString(),
-                device_id: deviceId
+                device_id: deviceId,
+                gtin: parsedData.gtin,
+                manufacturing_date: parsedData.date,
+                lot: parsedData.lot
             };
 
             const headers = {
@@ -411,6 +490,9 @@
                 code,
                 qty,
                 status,
+                gtin: parsedData.gtin,
+                date: parsedData.date,
+                lot: parsedData.lot,
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
             };
             scanHistory.unshift(item);
@@ -431,15 +513,18 @@
             container.innerHTML = scanHistory.map(item => {
                 const isSuccess = item.status.includes('SUCCÈS');
                 return `
-                    <div class="bg-darkcard border border-gray-800 p-3 rounded-xl flex items-center justify-between text-sm">
-                        <div>
+                    <div class="bg-darkcard border border-gray-800 p-3 rounded-xl text-sm">
+                        <div class="flex items-center justify-between mb-2">
                             <div class="font-mono text-brand-500 font-bold">${escapeHtml(item.code)}</div>
-                            <div class="text-xs text-gray-400">Qté: <span class="text-white font-bold">${item.qty}</span> • ${item.time}</div>
-                        </div>
-                        <div>
                             <span class="px-2 py-1 text-xs rounded-md font-semibold ${isSuccess ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-red-950 text-red-400 border border-red-800'}">
                                 ${item.status}
                             </span>
+                        </div>
+                        <div class="text-xs text-gray-400 space-y-1">
+                            <div>Qté: <span class="text-white font-bold">${item.qty}</span> • ${item.time}</div>
+                            ${item.gtin ? `<div>GTIN: <span class="text-gray-300">${escapeHtml(item.gtin)}</span></div>` : ''}
+                            ${item.date ? `<div>Date: <span class="text-gray-300">${formatDate(item.date)}</span></div>` : ''}
+                            ${item.lot ? `<div>Lot: <span class="text-gray-300">${escapeHtml(item.lot)}</span></div>` : ''}
                         </div>
                     </div>
                 `;
