@@ -1,9 +1,11 @@
 # =========================================================
 # APPLICATION ANDROID PYTHON (Kivy + Camera + HTTP Requests)
 # Fichier: main.py
+# Parse format GS1: 01{GTIN14}11{date AAMMJJ}10{lot}
 # =========================================================
 import json
 import time
+import re
 
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -53,6 +55,37 @@ class DataMatrixScannerApp(App):
         )
         main_layout.add_widget(self.code_input)
 
+        # Affichage des données parsées
+        main_layout.add_widget(
+            Label(text="Données parsées :", size_hint_y=None, height=25)
+        )
+        self.gtin_label = Label(
+            text="GTIN-14 : -",
+            font_size="14sp",
+            size_hint_y=None,
+            height=25,
+            color=(0.2, 0.8, 1, 1),
+        )
+        main_layout.add_widget(self.gtin_label)
+
+        self.date_label = Label(
+            text="Date de fabrication : -",
+            font_size="14sp",
+            size_hint_y=None,
+            height=25,
+            color=(0.2, 0.8, 1, 1),
+        )
+        main_layout.add_widget(self.date_label)
+
+        self.lot_label = Label(
+            text="Lot : -",
+            font_size="14sp",
+            size_hint_y=None,
+            height=25,
+            color=(0.2, 0.8, 1, 1),
+        )
+        main_layout.add_widget(self.lot_label)
+
         # Quantity Input
         main_layout.add_widget(
             Label(text="Quantité :", size_hint_y=None, height=25)
@@ -95,6 +128,48 @@ class DataMatrixScannerApp(App):
 
         return main_layout
 
+    def parse_datamatrix_gs1(self, code):
+        """
+        Parse le format GS1: 01{GTIN14}11{date AAMMJJ}10{lot}
+        Retourne un dictionnaire avec gtin, date_fab, lot
+        """
+        data = {"gtin": None, "date_fab": None, "lot": None}
+
+        # Pattern pour extraire GTIN-14 (01 + 14 digits)
+        gtin_match = re.search(r"01(\d{14})", code)
+        if gtin_match:
+            data["gtin"] = gtin_match.group(1)
+
+        # Pattern pour extraire date de fabrication (11 + AAMMJJ sur 6 digits)
+        date_match = re.search(r"11(\d{6})", code)
+        if date_match:
+            date_str = date_match.group(1)
+            # Format AAMMJJ -> JJ/MM/AA
+            data["date_fab"] = f"{date_str[4:6]}/{date_str[2:4]}/{date_str[0:2]}"
+
+        # Pattern pour extraire lot (10 + variable length)
+        lot_match = re.search(r"10([^\d][^\d]*|[A-Z0-9]*?)(?=\d{2}|$)", code)
+        if lot_match:
+            lot_value = lot_match.group(1).strip()
+            data["lot"] = lot_value if lot_value else None
+        else:
+            # Alternative: chercher "10" suivi de caractères jusqu'à fin ou prochain identifiant
+            lot_match = re.search(r"10(.+?)(?=01|11|$)", code)
+            if lot_match:
+                data["lot"] = lot_match.group(1).strip()
+
+        return data
+
+    def update_parsed_display(self, code):
+        """Affiche les données parsées à l'écran"""
+        parsed = self.parse_datamatrix_gs1(code)
+
+        self.gtin_label.text = f"GTIN-14 : {parsed['gtin'] or '-'}"
+        self.date_label.text = f"Date de fabrication : {parsed['date_fab'] or '-'}"
+        self.lot_label.text = f"Lot : {parsed['lot'] or '-'}"
+
+        return parsed
+
     def inc_qty(self, instance):
         try:
             val = int(self.qty_input.text)
@@ -119,12 +194,24 @@ class DataMatrixScannerApp(App):
             self.status_label.color = (1, 0.2, 0.2, 1)
             return
 
+        # Parser les données
+        parsed = self.update_parsed_display(code)
+
+        if not parsed["gtin"]:
+            self.status_label.text = "Erreur : Format GS1 invalide (01 manquant) !"
+            self.status_label.color = (1, 0.2, 0.2, 1)
+            return
+
+        # Construire le payload avec les 3 champs parsés
         payload = json.dumps(
             {
-                "datamatrix": code,
+                "gtin": parsed["gtin"],
+                "date_fabrication": parsed["date_fab"],
+                "lot": parsed["lot"],
                 "quantity": int(qty) if qty.isdigit() else 1,
                 "timestamp": int(time.time()),
                 "device_id": "PYTHON-ANDROID-01",
+                "datamatrix_raw": code,
             }
         )
 
@@ -148,6 +235,9 @@ class DataMatrixScannerApp(App):
         self.status_label.text = "Succès : Données transmises !"
         self.status_label.color = (0.2, 1, 0.3, 1)
         self.code_input.text = ""
+        self.gtin_label.text = "GTIN-14 : -"
+        self.date_label.text = "Date de fabrication : -"
+        self.lot_label.text = "Lot : -"
 
     def on_http_error(self, req, result):
         self.status_label.text = f"Erreur HTTP : {req.resp_status}"
