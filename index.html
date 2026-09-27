@@ -323,7 +323,11 @@
         function adjustQty(amount) {
             const qtyInput = document.getElementById('qtyInput');
             let current = parseInt(qtyInput.value) || 1;
-            current += amount;
+            if (current == 1 && amount == 10){
+                current = 10;
+            } else {
+                current += amount;
+            }
             if (current < 1) current = 1;
             qtyInput.value = current;
         }
