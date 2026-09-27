@@ -95,7 +95,7 @@
                         Code DataMatrix / Barcode Lu
                     </label>
                     <div class="relative">
-                        <input type="text" id="codeOutput" placeholder="Scannez ou saisissez un code..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-brand-500 font-mono" onchange="parseGS1Code()">
+                        <input type="text" id="codeOutput" placeholder="Scannez ou saisissez un code..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-brand-500 font-mono">
                         <button onclick="document.getElementById('codeOutput').focus()" class="absolute right-3 top-3 text-gray-500">
                             <i class="fa-solid fa-pen"></i>
                         </button>
@@ -183,6 +183,11 @@
                     <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">ID Appareil / Terminal</label>
                     <input type="text" id="deviceIdInput" placeholder="DEV-MOBILE-01" class="w-full bg-darkinput border border-gray-700 rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500">
                 </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Imprimante</label>
+                <input type="text" id="printerInput" placeholder="Imprimante-01" class="w-full bg-darkinput border border-gray-700 rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500">
             </div>
 
             <div>
@@ -390,11 +395,13 @@
             const apiUrl = document.getElementById('apiUrlInput').value.trim();
             const apiMethod = document.getElementById('apiMethodSelect').value;
             const deviceId = document.getElementById('deviceIdInput').value.trim();
+            const printer = document.getElementById('printerInput').value.trim();
             const apiKey = document.getElementById('apiKeyInput').value.trim();
 
             localStorage.setItem('cfg_api_url', apiUrl);
             localStorage.setItem('cfg_api_method', apiMethod);
             localStorage.setItem('cfg_device_id', deviceId);
+            localStorage.setItem('cfg_printer', printer);
             localStorage.setItem('cfg_api_key', apiKey);
 
             updateBadgeStatus();
@@ -405,6 +412,7 @@
             document.getElementById('apiUrlInput').value = localStorage.getItem('cfg_api_url') || '';
             document.getElementById('apiMethodSelect').value = localStorage.getItem('cfg_api_method') || 'POST';
             document.getElementById('deviceIdInput').value = localStorage.getItem('cfg_device_id') || 'MOBILE-01';
+            document.getElementById('printerInput').value = localStorage.getItem('cfg_printer') || '';
             document.getElementById('apiKeyInput').value = localStorage.getItem('cfg_api_key') || '';
 
             updateBadgeStatus();
@@ -428,6 +436,7 @@
             const apiUrl = localStorage.getItem('cfg_api_url');
             const method = localStorage.getItem('cfg_api_method') || 'POST';
             const deviceId = localStorage.getItem('cfg_device_id') || 'DEV-MOBILE';
+            const printer = localStorage.getItem('cfg_printer') || '';
             const apiKey = localStorage.getItem('cfg_api_key') || '';
 
             if (!code) {
@@ -447,6 +456,7 @@
                 quantity: qty,
                 timestamp: new Date().toISOString(),
                 device_id: deviceId,
+                printer: printer,
                 gtin: parsedData.gtin,
                 manufacturing_date: parsedData.date,
                 lot: parsedData.lot
