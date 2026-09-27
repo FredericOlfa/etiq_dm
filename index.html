@@ -98,7 +98,7 @@
                         Code DataMatrix / Barcode Lu
                     </label>
                     <div class="relative">
-                        <input type="text" id="codeOutput" placeholder="Scannez ou saisissez un code..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-brand-500 font-mono text-base focus:outline-none focus:border-brand-500">
+                        <input type="text" id="codeOutput" placeholder="Scannez ou saisissez un code..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-brand-500 font-mono text-sm focus:outline-none focus:border-brand-500">
                         <button onclick="document.getElementById('codeOutput').focus()" class="absolute right-3 top-3 text-gray-500">
                             <i class="fa-solid fa-pen"></i>
                         </button>
@@ -107,19 +107,27 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                        Quantité à enregistrer
+                        Quantité à imprimer
                     </label>
-                    <div class="flex items-center space-x-3">
-                        <button onclick="adjustQty(-10)" class="bg-gray-800 border border-gray-700 text-brand-500 hover:bg-gray-700 active:bg-gray-600 w-12 h-12 rounded-xl text-lg font-bold flex items-center justify-center">-10</button>
-                        <button onclick="adjustQty(-1)" class="bg-gray-800 border border-gray-700 text-white hover:bg-gray-700 active:bg-gray-600 w-12 h-12 rounded-xl text-xl font-bold flex items-center justify-center"><i class="fa-solid fa-minus"></i></button>
-                        <input type="number" id="qtyInput" value="1" min="1" class="flex-1 text-center bg-darkinput border border-gray-700 rounded-xl py-3 text-2xl font-black text-white focus:outline-none focus:border-brand-500">
-                        <button onclick="adjustQty(1)" class="bg-gray-800 border border-gray-700 text-white hover:bg-gray-700 active:bg-gray-600 w-12 h-12 rounded-xl text-xl font-bold flex items-center justify-center"><i class="fa-solid fa-plus"></i></button>
-                        <button onclick="adjustQty(10)" class="bg-gray-800 border border-gray-700 text-brand-500 hover:bg-gray-700 active:bg-gray-600 w-12 h-12 rounded-xl text-lg font-bold flex items-center justify-center">+10</button>
+                    <input type="number" id="qtyInput" value="1" min="1" class="w-full text-center bg-darkinput border border-gray-700 rounded-xl py-3 text-2xl font-black text-white focus:outline-none focus:border-brand-500 mb-3">
+                    <div class="flex gap-2 justify-center">
+                        <button onclick="adjustQty(-10)" class="bg-gray-800 border border-gray-700 text-brand-500 hover:bg-gray-700 active:bg-gray-600 w-14 h-12 rounded-xl text-lg font-bold flex items-center justify-center">
+                            -10
+                        </button>
+                        <button onclick="adjustQty(-1)" class="bg-gray-800 border border-gray-700 text-white hover:bg-gray-700 active:bg-gray-600 w-14 h-12 rounded-xl text-xl font-bold flex items-center justify-center">
+                            −
+                        </button>
+                        <button onclick="adjustQty(1)" class="bg-gray-800 border border-gray-700 text-white hover:bg-gray-700 active:bg-gray-600 w-14 h-12 rounded-xl text-xl font-bold flex items-center justify-center">
+                            +
+                        </button>
+                        <button onclick="adjustQty(10)" class="bg-gray-800 border border-gray-700 text-brand-500 hover:bg-gray-700 active:bg-gray-600 w-14 h-12 rounded-xl text-lg font-bold flex items-center justify-center">
+                            +10
+                        </button>
                     </div>
                 </div>
 
-                <button onclick="sendScanData()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-bold py-4 px-6 rounded-xl text-lg shadow-lg flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-paper-plane"></i>
+                <button onclick="sendScanData()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-bold py-4 px-6 rounded-xl text-lg shadow-lg flex items-center justify-center">
+                    <i class="fa-solid fa-paper-plane mr-2"></i>
                     <span>Imprimer</span>
                 </button>
             </div>
@@ -190,7 +198,7 @@
         </section>
     </main>
 
-    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-gray-900 border border-gray-700 text-white px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none z-50">
+    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-gray-900 border border-gray-700 text-white px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none">
         <div class="flex items-center gap-2">
             <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
             <span id="toastMsg" class="text-sm font-medium">Notification</span>
