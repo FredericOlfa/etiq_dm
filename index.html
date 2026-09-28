@@ -453,13 +453,14 @@
             // Include parsed GS1 fields in the payload
             const payload = {
                 datamatrix: code,
-                quantity: qty,
+                qty: qty,
                 timestamp: new Date().toISOString(),
                 device_id: deviceId,
                 printer: printer,
                 gtin: parsedData.gtin,
-                manufacturing_date: parsedData.date,
-                lot: parsedData.lot
+                PUB_SDTPRB_gencod : parsedData.gtin.slice(1),
+                DATE_FAB: parsedData.date,
+                LOT: parsedData.lot
             };
 
             const headers = {
