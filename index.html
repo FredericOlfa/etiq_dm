@@ -488,9 +488,18 @@
 
             try {
                 let response;
+                let responseIsOpaque = false;
                 if (method === 'GET') {
                     const queryParams = new URLSearchParams(payload).toString();
-                    response = await fetch(`${apiUrl}?${queryParams}`, { method: 'GET', headers });
+                    if (apiKey) {
+                        response = await fetch(`${apiUrl}?${queryParams}`, { method: 'GET', headers });
+                    } else {
+                        response = await fetch(`${apiUrl}?${queryParams}`, {
+                            method: 'GET',
+                            mode: 'no-cors'
+                        });
+                        responseIsOpaque = response.type === 'opaque';
+                    }
                 } else {
                     response = await fetch(apiUrl, {
                         method: method,
@@ -499,8 +508,8 @@
                     });
                 }
 
-                if (response.ok) {
-                    showToast("Données envoyées avec succès !", "success");
+                if (response.ok || responseIsOpaque) {
+                    showToast(responseIsOpaque ? "Requête envoyée (réponse non vérifiable par le navigateur)" : "Données envoyées avec succès !", "success");
                     addHistoryItem(code, qty, 'SUCCÈS');
                     clearScannedData();
                 } else {
