@@ -191,6 +191,11 @@
             </div>
 
             <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Étiquette</label>
+                <input type="text" id="etiquetteInput" placeholder="Nom ou référence de l'étiquette" class="w-full bg-darkinput border border-gray-700 rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500">
+            </div>
+
+            <div>
                 <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Clé API / Token de sécurité (Optional)</label>
                 <input type="password" id="apiKeyInput" placeholder="Bearer eyJhbGciOi..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500">
             </div>
@@ -396,12 +401,14 @@
             const apiMethod = document.getElementById('apiMethodSelect').value;
             const deviceId = document.getElementById('deviceIdInput').value.trim();
             const printer = document.getElementById('printerInput').value.trim();
+            const etiquette = document.getElementById('etiquetteInput').value.trim();
             const apiKey = document.getElementById('apiKeyInput').value.trim();
 
             localStorage.setItem('cfg_api_url', apiUrl);
             localStorage.setItem('cfg_api_method', apiMethod);
             localStorage.setItem('cfg_device_id', deviceId);
             localStorage.setItem('cfg_printer', printer);
+            localStorage.setItem('cfg_etiquette', etiquette);
             localStorage.setItem('cfg_api_key', apiKey);
 
             updateBadgeStatus();
@@ -413,6 +420,7 @@
             document.getElementById('apiMethodSelect').value = localStorage.getItem('cfg_api_method') || 'POST';
             document.getElementById('deviceIdInput').value = localStorage.getItem('cfg_device_id') || 'MOBILE-01';
             document.getElementById('printerInput').value = localStorage.getItem('cfg_printer') || '';
+            document.getElementById('etiquetteInput').value = localStorage.getItem('cfg_etiquette') || '';
             document.getElementById('apiKeyInput').value = localStorage.getItem('cfg_api_key') || '';
 
             updateBadgeStatus();
@@ -437,6 +445,7 @@
             const method = localStorage.getItem('cfg_api_method') || 'POST';
             const deviceId = localStorage.getItem('cfg_device_id') || 'DEV-MOBILE';
             const printer = localStorage.getItem('cfg_printer') || '';
+            const etiquette = localStorage.getItem('cfg_etiquette') || '';
             const apiKey = localStorage.getItem('cfg_api_key') || '';
 
             if (!code) {
@@ -457,6 +466,7 @@
                 timestamp: new Date().toISOString(),
                 device_id: deviceId,
                 printer: printer,
+                etiquette: etiquette,
                 gtin: parsedData.gtin,
                 PUB_SDTPRB_gencod : parsedData.gtin.slice(1),
                 DATE_FAB: parsedData.date,
