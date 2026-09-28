@@ -95,7 +95,7 @@
                         Code DataMatrix / Barcode Lu
                     </label>
                     <div class="relative">
-                        <input type="text" id="codeOutput" placeholder="Scannez ou saisissez un code..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-brand-500 font-mono">
+                        <input type="text" id="codeOutput" oninput="parseGS1Code(false)" placeholder="Scannez ou saisissez un code..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-brand-500 font-mono">
                         <button onclick="document.getElementById('codeOutput').focus()" class="absolute right-3 top-3 text-gray-500">
                             <i class="fa-solid fa-pen"></i>
                         </button>
@@ -332,7 +332,7 @@
             }
         }
 
-        function parseGS1Code() {
+        function parseGS1Code(showFeedback = true) {
             const code = document.getElementById('codeOutput').value.trim();
             
             // Reset fields
@@ -358,9 +358,9 @@
                 document.getElementById('dateField').value = formatDate(parsedData.date);
                 document.getElementById('lotField').value = parsedData.lot;
 
-                showToast("Code GS1 parsé avec succès !", "success");
+                if (showFeedback) showToast("Code GS1 parsé avec succès !", "success");
             } else {
-                showToast("Format GS1-128 non reconnu. Vérifiez le code.", "error");
+                if (showFeedback) showToast("Format GS1-128 non reconnu. Vérifiez le code.", "error");
             }
         }
 
