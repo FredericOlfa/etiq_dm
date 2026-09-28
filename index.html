@@ -375,12 +375,12 @@
             return dateStr;
         }
 
-        function formatISODate(dateStr) {
+        function formatDateForRequest(dateStr) {
             if (!dateStr || dateStr.length !== 6) return dateStr;
             const year = dateStr.substring(0, 2);
             const month = dateStr.substring(2, 4);
             const day = dateStr.substring(4, 6);
-            return `20${year}-${month}-${day}`;
+            return `${day}.${month}.20${year}`;
         }
 
         function clearScannedData() {
@@ -477,7 +477,7 @@
                 etiquette: etiquette,
                 gtin: parsedData.gtin,
                 PUB_SDTPRB_gencod : parsedData.gtin.slice(1),
-                DATE_FAB: formatISODate(parsedData.date),
+                DATE_FAB: formatDateForRequest(parsedData.date),
                 LOT: parsedData.lot
             };
 
