@@ -195,9 +195,15 @@
                 <input type="text" id="etiquetteInput" placeholder="Nom ou référence de l'étiquette" class="w-full bg-darkinput border border-gray-700 rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-brand-500">
             </div>
 
-            <div>
-                <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Clé API / Token de sécurité (Optional)</label>
-                <input type="password" id="apiKeyInput" placeholder="Bearer eyJhbGciOi..." class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500">
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Identifiant API</label>
+                    <input type="text" id="apiUsernameInput" autocomplete="username" placeholder="Identifiant" class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Mot de passe API</label>
+                    <input type="password" id="apiPasswordInput" autocomplete="current-password" placeholder="Mot de passe" class="w-full bg-darkinput border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
             </div>
 
             <div class="pt-2">
@@ -410,14 +416,17 @@
             const deviceId = document.getElementById('deviceIdInput').value.trim();
             const printer = document.getElementById('printerInput').value.trim();
             const etiquette = document.getElementById('etiquetteInput').value.trim();
-            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            const apiUsername = document.getElementById('apiUsernameInput').value.trim();
+            const apiPassword = document.getElementById('apiPasswordInput').value;
 
             localStorage.setItem('cfg_api_url', apiUrl);
             localStorage.setItem('cfg_api_method', apiMethod);
             localStorage.setItem('cfg_device_id', deviceId);
             localStorage.setItem('cfg_printer', printer);
             localStorage.setItem('cfg_etiquette', etiquette);
-            localStorage.setItem('cfg_api_key', apiKey);
+            localStorage.setItem('cfg_api_username', apiUsername);
+            localStorage.setItem('cfg_api_password', apiPassword);
+            localStorage.removeItem('cfg_api_key');
 
             updateBadgeStatus();
             showToast("Configuration enregistrée !", "success");
@@ -429,7 +438,8 @@
             document.getElementById('deviceIdInput').value = localStorage.getItem('cfg_device_id') || 'MOBILE-01';
             document.getElementById('printerInput').value = localStorage.getItem('cfg_printer') || '';
             document.getElementById('etiquetteInput').value = localStorage.getItem('cfg_etiquette') || '';
-            document.getElementById('apiKeyInput').value = localStorage.getItem('cfg_api_key') || '';
+            document.getElementById('apiUsernameInput').value = localStorage.getItem('cfg_api_username') || '';
+            document.getElementById('apiPasswordInput').value = localStorage.getItem('cfg_api_password') || '';
 
             updateBadgeStatus();
         }
@@ -454,7 +464,8 @@
             const deviceId = localStorage.getItem('cfg_device_id') || 'DEV-MOBILE';
             const printer = localStorage.getItem('cfg_printer') || '';
             const etiquette = localStorage.getItem('cfg_etiquette') || '';
-            const apiKey = localStorage.getItem('cfg_api_key') || '';
+            const apiUsername = localStorage.getItem('cfg_api_username') || '';
+            const apiPassword = localStorage.getItem('cfg_api_password') || '';
 
             if (!code) {
                 showToast("Veuillez d'abord scanner un DataMatrix", "error");
@@ -484,14 +495,19 @@
             const headers = {
                 'Content-Type': 'application/json'
             };
-            if (apiKey) headers['Authorization'] = apiKey;
+            const hasCredentials = apiUsername !== '' || apiPassword !== '';
+            if (hasCredentials) {
+                const credentialBytes = new TextEncoder().encode(`${apiUsername}:${apiPassword}`);
+                const credentialBinary = Array.from(credentialBytes, byte => String.fromCharCode(byte)).join('');
+                headers['Authorization'] = `Basic ${btoa(credentialBinary)}`;
+            }
 
             try {
                 let response;
                 let responseIsOpaque = false;
                 if (method === 'GET') {
                     const queryParams = new URLSearchParams(payload).toString();
-                    if (apiKey) {
+                    if (hasCredentials) {
                         response = await fetch(`${apiUrl}?${queryParams}`, { method: 'GET', headers });
                     } else {
                         response = await fetch(`${apiUrl}?${queryParams}`, {
