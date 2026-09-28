@@ -375,6 +375,14 @@
             return dateStr;
         }
 
+        function formatISODate(dateStr) {
+            if (!dateStr || dateStr.length !== 6) return dateStr;
+            const year = dateStr.substring(0, 2);
+            const month = dateStr.substring(2, 4);
+            const day = dateStr.substring(4, 6);
+            return `20${year}-${month}-${day}`;
+        }
+
         function clearScannedData() {
             document.getElementById('codeOutput').value = '';
             document.getElementById('qtyInput').value = 1;
@@ -469,7 +477,7 @@
                 etiquette: etiquette,
                 gtin: parsedData.gtin,
                 PUB_SDTPRB_gencod : parsedData.gtin.slice(1),
-                DATE_FAB: parsedData.date,
+                DATE_FAB: formatISODate(parsedData.date),
                 LOT: parsedData.lot
             };
 
